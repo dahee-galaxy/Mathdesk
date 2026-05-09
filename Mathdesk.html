@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MathDesk Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Mono:wght@400;500&family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{--bg:#0d0d14;--sur:#1a1a2e;--deep:#13131f;--s2:#1f1f35;--bor:#2a2a45;--dim:#3a3a58;--tx:#e8e4dc;--mu:#6b6880;--so:#9e9ab0;--red:#e05a4e;--grn:#4ead8a;--gld:#c8a96e;}
+body{font-family:'Noto Serif KR',Georgia,serif;background:var(--bg);color:var(--tx);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(var(--bor) 1px,transparent 1px),linear-gradient(90deg,var(--bor) 1px,transparent 1px);background-size:48px 48px;opacity:.15;}
+.pg{display:none;position:relative;z-index:1;}
+.pg.on{display:block;}
+#home.pg.on{display:flex;}
+.nav{position:sticky;top:0;z-index:100;background:rgba(13,13,20,.97);border-bottom:1px solid var(--bor);height:52px;display:flex;align-items:center;padding:0 12px;gap:8px;}
+.bk{display:flex;align-items:center;gap:5px;background:var(--s2);border:1px solid var(--bor);border-radius:6px;padding:6px 11px;font-family:'DM Mono',monospace;font-size:11px;color:var(--so);cursor:pointer;}
+.nttl{font-family:'Playfair Display',serif;font-size:16px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.nbg{font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;border-radius:3px;flex-shrink:0;}
+.nb-r{background:rgba(224,90,78,.12);border:1px solid rgba(224,90,78,.3);color:var(--red);}
+.nb-g{background:rgba(78,173,138,.12);border:1px solid rgba(78,173,138,.3);color:var(--grn);}
+.nb-o{background:rgba(200,169,110,.12);border:1px solid rgba(200,169,110,.3);color:var(--gld);}
+#home{min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:44px 14px 56px;}
+.g1{position:fixed;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(224,90,78,.12),transparent 70%);top:-90px;right:-50px;pointer-events:none;z-index:0;}
+.g2{position:fixed;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(78,173,138,.1),transparent 70%);bottom:-70px;left:-50px;pointer-events:none;z-index:0;}
+.logo{font-family:'Playfair Display',serif;font-size:clamp(34px,10vw,66px);font-weight:700;letter-spacing:-2px;background:linear-gradient(135deg,var(--tx) 30%,var(--gld));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:5px;}
+.lsub{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--mu);margin-bottom:11px;}
+.hl{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(13px,4vw,18px);color:var(--mu);text-align:center;margin-bottom:28px;line-height:1.7;}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:13px;width:100%;max-width:820px;}
+.card{position:relative;background:var(--sur);border:1px solid var(--bor);border-radius:6px;padding:24px 18px 20px;cursor:pointer;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;opacity:0;transition:opacity .2s;}
+.cr::before{background:var(--red);}.cg::before{background:var(--grn);}.co::before{background:var(--gld);}
+.card:active::before{opacity:1;}
+.cttl{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:7px;line-height:1.2;}
+.cr .cttl{color:#f0a098;}.cg .cttl{color:#8ed8b8;}.co .cttl{color:#e0c88a;}
+.cdsc{font-size:11px;color:var(--mu);line-height:1.7;margin-bottom:12px;}
+.wrap{max-width:700px;margin:0 auto;padding:16px 12px 76px;}
+.panel{background:var(--sur);border:1px solid var(--bor);border-radius:6px;margin-bottom:13px;overflow:hidden;}
+.ph{padding:9px 13px;border-bottom:1px solid var(--bor);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--mu);}
+.pb{padding:13px;}
+.fld{margin-bottom:9px;}
+.fl{display:block;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;color:var(--mu);margin-bottom:3px;text-transform:uppercase;}
+select,input[type=text],textarea.custom-ta{width:100%;padding:8px 10px;background:var(--deep);border:1px solid var(--bor);border-radius:4px;color:var(--tx);font-size:14px;outline:none;}
+.btn{padding:9px 11px;border:none;border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;cursor:pointer;font-weight:600;}
+.br{background:var(--red);color:#0d0d14;}
+.bo{background:var(--gld);color:#0d0d14;}
+.bg{background:rgba(78,173,138,.15);border:1px solid rgba(78,173,138,.3);color:var(--grn);}
+.bgh{background:transparent;border:1px solid var(--bor);color:var(--so);}
+.brow{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px;}
+.brow .btn{flex:1;}
+.pcard{background:var(--sur);border:1px solid var(--bor);border-top:3px solid var(--red);border-radius:6px;padding:17px;margin-bottom:13px;min-height:120px;}
+.qt{font-size:15px;line-height:2;}
+.sw{display:none;margin-top:13px;padding-top:13px;border-top:1px solid var(--bor);}
+.step{background:var(--deep);border-left:2px solid var(--gld);padding:7px 11px;margin-bottom:5px;font-size:13px;line-height:1.9;}
+.ans{background:rgba(200,169,110,.07);border:1px solid rgba(200,169,110,.3);padding:9px 13px;border-radius:4px;font-size:14px;color:var(--gld);text-align:center;font-weight:600;}
+.ftabs{display:flex;border-bottom:1px solid var(--bor);}
+.ftab{flex:1;padding:9px;background:none;border:none;cursor:pointer;font-family:'DM Mono',monospace;font-size:10px;font-weight:bold;color:var(--mu);border-bottom:2px solid transparent;}
+.ftab.on{color:var(--grn);border-bottom-color:var(--grn);background:rgba(78,173,138,.05);}
+.fbd{display:none;padding:11px;}
+.fbd.on{display:block;}
+#fe-pal{max-height:400px;overflow-y:auto;}
+.psec{margin-bottom:15px;}
+.plbl{font-size:11px;color:var(--so);margin-bottom:8px;border-bottom:1px dashed var(--bor);padding-bottom:4px;}
+.pgrd{display:flex;flex-wrap:wrap;gap:5px;}
+.sym{background:var(--s2);border:1px solid var(--bor);color:var(--tx);padding:8px 12px;border-radius:4px;cursor:pointer;font-size:14px;font-family:'DM Mono',monospace;transition:background 0.2s;min-width:40px;text-align:center;}
+.sym:hover{background:var(--dim);}
+.pvbox{min-height:65px;background:var(--deep);border:1px solid var(--bor);border-radius:4px;padding:13px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.ald{display:none;flex-direction:column;align-items:center;padding:36px 0;gap:12px;text-align:center;}
+.ald.on{display:flex;}
+.sp{width:32px;height:32px;border:2px solid var(--bor);border-top-color:var(--gld);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.fab{position:fixed;bottom:18px;left:14px;z-index:200;display:none;align-items:center;gap:6px;background:var(--sur);border:1px solid var(--bor);border-radius:28px;padding:8px 14px;font-size:10px;color:var(--so);cursor:pointer;}
+.fab.on{display:flex;}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--grn);color:#0d0d14;padding:8px 15px;border-radius:4px;opacity:0;transition:all .3s;z-index:9999;font-weight:bold;}
+.toast.on{opacity:1;}
+</style>
+</head>
+<body>
+<div class="g1"></div><div class="g2"></div>
+<div class="toast" id="toast"></div>
+<button class="fab" id="fab" onclick="goTo('home')">&#8962; 홈으로</button>
+
+<div id="home" class="pg on">
+  <div class="hin">
+    <div class="logo">MathDesk Pro</div>
+    <div class="lsub">수학 교사 전용 스마트 워크스페이스</div>
+    <div class="hl">단원별 문제 은행부터 실제 AI 문제 창작까지</div>
+    
+    <div class="panel" style="width:100%; max-width:400px; margin-bottom:25px;">
+      <div class="ph">AI API Key 설정 (Gemini)</div>
+      <div class="pb">
+        <input type="text" id="apiKeyInp" placeholder="AIzaSy..." oninput="saveApiSilently()" onchange="showToast('API 키가 설정되었습니다.')">
+        <p style="font-size:10px; color:var(--mu); margin-top:6px;">키를 붙여넣으시면 단종된 모델을 배제하고 최신 모델만을 탐색합니다.</p>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card cr" onclick="goTo('pg')">
+        <div class="cttl">문제 출제<br>은행</div>
+        <p class="cdsc">전 학년 전 단원 알고리즘 내장. 한 단원 내에서도 다양한 유형과 무작위 숫자가 적용됩니다.</p>
+        <div class="nbg nb-r">BANK</div>
+      </div>
+      <div class="card co" onclick="goTo('ai')">
+        <div class="cttl">AI 맞춤<br>생성기</div>
+        <p class="cdsc">서버 과부하 우회 및 JSON 파싱 에러 완전 해결. 실시간으로 고차원 문제를 창작합니다.</p>
+        <div class="nbg nb-o">AI REAL</div>
+      </div>
+      <div class="card cg" onclick="goTo('fe')">
+        <div class="cttl">수식 입력<br>도우미</div>
+        <p class="cdsc">중등 필수 기호가 포함된 확장 팔레트와 자연어 AI 수식 변환기를 제공합니다.</p>
+        <div class="nbg nb-g">LATEX</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="pg" class="pg">
+  <nav class="nav"><button class="bk" onclick="goTo('home')">← 홈</button><span class="nttl">문제 출제 은행 (다중 유형 지원)</span></nav>
+  <div class="wrap">
+    <div class="panel">
+      <div class="ph">문제 설정</div>
+      <div class="pb">
+        <div class="row2" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div class="fld"><label class="fl">학년</label>
+            <select id="pg-grade" onchange="pgTopics()">
+              <option value="m1">중1</option><option value="m2">중2</option><option value="m3">중3</option>
+              <option value="h1">고1</option><option value="h2" selected>고2</option><option value="h3">고3</option>
+            </select>
+          </div>
+          <div class="fld"><label class="fl">단원</label><select id="pg-topic"></select></div>
+        </div>
+        <div class="brow">
+          <button class="btn br" onclick="pgGen()">▶ 무작위 새 문제 출제</button>
+          <button class="btn bgh" onclick="togSol('pg-sw')">풀이/정답 보기</button>
+        </div>
+      </div>
+    </div>
+    <div class="pcard">
+      <div class="qt ph" id="pg-q" style="text-align:center; color:var(--mu);">단원 선택 후 버튼을 누르면 문제가 생성됩니다.<br>(같은 단원이라도 여러 유형이 무작위로 나옵니다)</div>
+      <div class="sw" id="pg-sw">
+        <div class="slbl" style="font-size:12px; color:var(--mu); margin-bottom:5px;">풀이 ──</div>
+        <div id="pg-steps"></div>
+        <div class="ans" id="pg-ans"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="ai" class="pg">
+  <nav class="nav"><button class="bk" onclick="goTo('home')">← 홈</button><span class="nttl">AI 맞춤 문제 생성기</span></nav>
+  <div class="wrap">
+    <div class="panel">
+      <div class="ph">AI 문제 요청</div>
+      <div class="pb">
+        <textarea class="custom-ta" id="ai-custom" rows="3" placeholder="예: 무한등비급수를 활용해서 도형의 넓이를 구하는 고난도 문제를 만들어줘."></textarea>
+        <div class="brow">
+          <button class="btn bo" onclick="aiGen()">✨ AI 문제 창작</button>
+          <button class="btn bgh" onclick="togSol('ai-sw')">풀이/정답 보기</button>
+        </div>
+      </div>
+    </div>
+    <div class="pcard" style="border-top-color:var(--gld);">
+      <div class="ald" id="aiLoad"><div class="sp"></div><div class="spt" style="color:var(--gld); font-size:12px;">AI가 현재 계정의 모델을 탐색하여 문제를 생성 중...<br>(단종 모델 제외, 혼잡 시 우회 채널로 자동 재접속)</div></div>
+      <div class="qt ph" id="ai-q" style="text-align:center; color:var(--mu);">API 키를 설정하고 요청을 입력하세요.</div>
+      <div class="sw" id="ai-sw">
+        <div class="slbl" style="font-size:12px; color:var(--mu); margin-bottom:5px;">AI 풀이 ──</div>
+        <div id="ai-steps"></div>
+        <div class="ans" id="ai-ans"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="fe" class="pg">
+  <nav class="nav"><button class="bk" onclick="goTo('home')">← 홈</button><span class="nttl">수식 입력 도우미 (확장 팔레트)</span></nav>
+  <div class="wrap">
+    <div class="panel">
+      <div class="ftabs">
+        <button class="ftab on" onclick="feTab('pal',this)">🎹 확장 팔레트</button>
+        <button class="ftab" onclick="feTab('ltx',this)">{ } 텍스트/직접입력</button>
+        <button class="ftab" onclick="feTab('ait',this)">✨ 자연어 AI 변환</button>
+      </div>
+
+      <div id="fe-pal" class="fbd on">
+        <div class="psec"><div class="plbl">기본 연산 및 중등 기하 (추가)</div><div class="pgrd">
+          <button class="sym" onclick="fi('\\frac{a}{b}')">a/b</button><button class="sym" onclick="fi('\\sqrt{x}')">√x</button>
+          <button class="sym" onclick="fi('x^{n}')">xⁿ</button><button class="sym" onclick="fi('x_{n}')">xₙ</button>
+          <button class="sym" onclick="fi('\\pm')">±</button><button class="sym" onclick="fi('\\times')">×</button>
+          <button class="sym" onclick="fi('\\div')">÷</button><button class="sym" onclick="fi('|x|')">|x|</button>
+          <button class="sym" onclick="fi('\\neq')">≠</button><button class="sym" onclick="fi('\\approx')">≈</button>
+          <button class="sym" onclick="fi('\\equiv')">≡</button><button class="sym" onclick="fi('\\leq')">≤</button>
+          <button class="sym" onclick="fi('\\geq')">≥</button><button class="sym" onclick="fi('\\propto')">∝</button>
+          <button class="sym" onclick="fi('\\triangle')">△</button><button class="sym" onclick="fi('\\angle')">∠</button>
+          <button class="sym" onclick="fi('\\perp')">⊥</button><button class="sym" onclick="fi('\\parallel')">∥</button>
+          <button class="sym" onclick="fi('\\sim')">∽</button><button class="sym" onclick="fi('^\\circ')">°</button>
+        </div></div>
+        <div class="psec"><div class="plbl">고등 대수 및 미적분</div><div class="pgrd">
+          <button class="sym" onclick="fi('\\lim_{x \\to a}')">lim</button><button class="sym" onclick="fi('\\infty')">∞</button>
+          <button class="sym" onclick="fi('\\sum_{k=1}^{n}')">Σ</button><button class="sym" onclick="fi('\\prod_{k=1}^{n}')">Π</button>
+          <button class="sym" onclick="fi('\\int')">∫</button><button class="sym" onclick="fi('\\int_{a}^{b}')">∫(a,b)</button>
+          <button class="sym" onclick="fi('f\'(x)')">f'(x)</button><button class="sym" onclick="fi('\\frac{d}{dx}')">d/dx</button>
+          <button class="sym" onclick="fi('\\sin \\theta')">sin</button><button class="sym" onclick="fi('\\cos \\theta')">cos</button>
+          <button class="sym" onclick="fi('\\tan \\theta')">tan</button><button class="sym" onclick="fi('\\log_{a} b')">log</button>
+          <button class="sym" onclick="fi('\\ln x')">ln</button><button class="sym" onclick="fi('e^{x}')">e^x</button>
+        </div></div>
+        <div class="psec"><div class="plbl">확률과 통계 &amp; 행렬</div><div class="pgrd">
+          <button class="sym" onclick="fi('{}_{n}\\mathrm{C}_{r}')">nCr</button><button class="sym" onclick="fi('{}_{n}\\mathrm{P}_{r}')">nPr</button>
+          <button class="sym" onclick="fi('\\bar{x}')">x̄</button><button class="sym" onclick="fi('\\hat{p}')">p̂</button>
+          <button class="sym" onclick="fi('N(m, \\sigma^2)')">N(m,σ²)</button><button class="sym" onclick="fi('P(A|B)')">P(A|B)</button>
+          <button class="sym" onclick="fi('\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}')">[행렬]</button><button class="sym" onclick="fi('\\vec{v}')">v⃗</button>
+          <button class="sym" onclick="fi('\\overrightarrow{AB}')">AB→</button><button class="sym" onclick="fi('\\cdot')">·</button>
+        </div></div>
+        <div class="psec"><div class="plbl">집합/논리/그리스 문자</div><div class="pgrd">
+          <button class="sym" onclick="fi('\\in')">∈</button><button class="sym" onclick="fi('\\subset')">⊂</button>
+          <button class="sym" onclick="fi('\\cup')">∪</button><button class="sym" onclick="fi('\\cap')">∩</button>
+          <button class="sym" onclick="fi('\\emptyset')">∅</button><button class="sym" onclick="fi('\\therefore')">∴</button>
+          <button class="sym" onclick="fi('\\because')">∵</button>
+          <button class="sym" onclick="fi('\\alpha')">α</button><button class="sym" onclick="fi('\\beta')">β</button>
+          <button class="sym" onclick="fi('\\theta')">θ</button><button class="sym" onclick="fi('\\pi')">π</button>
+          <button class="sym" onclick="fi('\\sigma')">σ</button><button class="sym" onclick="fi('\\omega')">ω</button>
+        </div></div>
+      </div>
+
+      <div id="fe-ltx" class="fbd"><textarea id="fe-input" class="custom-ta" rows="4" placeholder="여기에 LaTeX 코드를 직접 입력하거나 수식 팔레트를 클릭하여 추가하세요." oninput="renderPv()"></textarea></div>
+      
+      <div id="fe-ait" class="fbd">
+        <div class="brow" style="margin-top:0;">
+          <input type="text" id="fe-ko" placeholder="예: 인테그랄 0부터 1까지 x 제곱 dx">
+          <button class="btn bo" style="flex:none; width:80px;" onclick="convertKo()">변환</button>
+        </div>
+        <div class="ald" id="aitLoad" style="padding:15px 0;"><div class="sp" style="width:20px; height:20px;"></div></div>
+        <p style="font-size:10px; color:var(--mu); margin-top:8px;">자연어로 수식을 설명하면 AI가 LaTeX 코드로 변환하여 입력창에 넣습니다.</p>
+      </div>
+
+      <div class="pb" style="border-top:1px solid var(--bor);">
+        <div class="brow" style="margin-bottom: 12px; justify-content: flex-end;">
+          <button class="btn bgh" style="flex:none; padding:6px 12px; font-size:10px;" onclick="delLtx()">⌫ 지우기</button>
+          <button class="btn bgh" style="flex:none; padding:6px 12px; font-size:10px; color:var(--red); border-color:rgba(224,90,78,0.3);" onclick="clrLtx()">🗑️ 전체삭제</button>
+          <button class="btn bo" style="flex:none; padding:6px 12px; font-size:10px;" onclick="copyLtx()">📋 복사</button>
+        </div>
+        <div class="plbl" style="border:none;">실시간 렌더링 미리보기</div>
+        <div class="pvbox" id="fe-pv"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const topicsMap = {
+  m1: ['소인수분해', '정수와 유리수', '일차방정식', '좌표평면과 그래프'],
+  m2: ['순환소수', '식의 계산', '연립방정식', '일차함수', '도형의 성질'],
+  m3: ['제곱근', '인수분해', '이차방정식', '이차함수', '삼각비'],
+  h1: ['다항식', '이차방정식과 함수', '원의 방정식', '집합과 명제', '함수'],
+  h2: ['지수와 로그', '삼각함수', '수열', '함수의 극한', '미분', '적분'],
+  h3: ['수열의 극한', '미분법', '적분법', '확률과 통계', '기하']
+};
+
+function pgTopics() {
+  const g = document.getElementById('pg-grade').value;
+  const ts = topicsMap[g];
+  const select = document.getElementById('pg-topic');
+  select.innerHTML = ts.map(t => `<option value="${t}">${t}</option>`).join('');
+}
+
+window.onload = () => {
+  pgTopics();
+  const k = localStorage.getItem('gemini_key');
+  if (k) document.getElementById('apiKeyInp').value = k;
+};
+
+function goTo(id) {
+  document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  document.getElementById('fab').classList.toggle('on', id !== 'home');
+}
+
+function togSol(id) {
+  const s = document.getElementById(id);
+  s.style.display = s.style.display === 'block' ? 'none' : 'block';
+}
+
+function showToast(m) {
+  const t = document.getElementById('toast');
+  t.textContent = m;
+  t.classList.add('on');
+  setTimeout(() => t.classList.remove('on'), 2500);
+}
+
+function saveApiSilently() {
+  localStorage.setItem('gemini_key', document.getElementById('apiKeyInp').value.trim());
+}
+
+function parseJsonResponse(raw) {
+  if (!raw) return null;
+  
+  let text = raw
+    .replace(/```json\s*/gi, '')
+    .replace(/```\s*/g, '')
+    .trim();
+
+  const firstBrace = text.indexOf('{');
+  const lastBrace = text.lastIndexOf('}');
+  if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+    text = text.substring(firstBrace, lastBrace + 1);
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch (e1) {
+    try {
+      const fixed = text.replace(/\\(?!["\\/bfnrtu])/g, '\\\\');
+      return JSON.parse(fixed);
+    } catch (e2) {
+      try {
+        const fixed2 = text
+          .replace(/\r?\n/g, '\\n')
+          .replace(/\t/g, '\\t')
+          .replace(/\\(?!["\\/bfnrtu])/g, '\\\\');
+        return JSON.parse(fixed2);
+      } catch (e3) {
+        try {
+          const qMatch = raw.match(/"q"\s*:\s*"((?:[^"\\]|\\.)*)"/s);
+          const sMatch = raw.match(/"s"\s*:\s*"((?:[^"\\]|\\.)*)"/s);
+          const aMatch = raw.match(/"a"\s*:\s*"((?:[^"\\]|\\.)*)"/s);
+          if (qMatch && sMatch && aMatch) {
+            return { q: qMatch[1], s: sMatch[1], a: aMatch[1] };
+          }
+        } catch (e4) {}
+        return null;
+      }
+    }
+  }
+}
+
+function formatMath(txt) {
+  if (!txt) return '';
+  txt = txt.replace(/\$\$([\s\S]*?)\$\$/g, '\\[ $1 \\]');
+  txt = txt.replace(/\$((?:[^$\\]|\\.)*?)\$/g, '\\( $1 \\)');
+  return txt;
+}
+
+async function callAI(prompt, expectJson = false) {
+  let key = document.getElementById('apiKeyInp').value.trim();
+  if (!key) key = localStorage.getItem('gemini_key');
+  if (!key) { alert('API 키를 입력해주세요!'); return null; }
+
+  let modelsToTry = [];
+
+  try {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${key}`);
+    if (res.ok) {
+      const data = await res.json();
+      modelsToTry = (data.models || [])
+        .map(m => m.name)
+        .filter(name =>
+          name.includes('gemini') &&
+          !name.includes('vision') &&
+          !name.includes('1.0') &&
+          !name.includes('embedding') &&
+          !name.includes('aqa')
+        );
+    }
+  } catch (e) {}
+
+  if (modelsToTry.length === 0) {
+    modelsToTry = [
+      'models/gemini-2.0-flash',
+      'models/gemini-1.5-flash',
+      'models/gemini-1.5-pro'
+    ];
+  } else {
+    modelsToTry.sort((a, b) => {
+      const aFlash = a.includes('flash');
+      const bFlash = b.includes('flash');
+      if (aFlash && !bFlash) return -1;
+      if (!aFlash && bFlash) return 1;
+      return b.localeCompare(a);
+    });
+  }
+
+  let lastErrorMsg = '';
+
+  for (const model of modelsToTry) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/${model}:generateContent?key=${key}`;
+
+    const reqBody = {
+      contents: [{ parts: [{ text: prompt }] }]
+    };
+
+    const supportsJsonMode = /gemini-(1\.[5-9]|[2-9]\.)/.test(model);
+    if (expectJson && supportsJsonMode) {
+      reqBody.generationConfig = {
+        responseMimeType: 'application/json'
+      };
+    }
+
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reqBody)
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        const candidate = data.candidates && data.candidates[0];
+        const part = candidate && candidate.content && candidate.content.parts && candidate.content.parts[0];
+        if (part && part.text) {
+          return part.text;
+        }
+        const reason = candidate && candidate.finishReason;
+        if (reason && reason !== 'STOP') {
+          lastErrorMsg = `모델 응답 차단: ${reason}`;
+          continue;
+        }
+        lastErrorMsg = '응답이 비어 있습니다.';
+        continue;
+      }
+
+      if (res.status === 404 || res.status === 503 || res.status === 429) {
+        lastErrorMsg = `[${res.status}] ${(data.error && data.error.message) || '오류'}`;
+        continue;
+      }
+
+      throw new Error((data.error && data.error.message) || 'API 오류');
+
+    } catch (e) {
+      lastErrorMsg = e.message;
+      if (e.message.includes('인증') || e.message.includes('auth') || e.message.includes('API key')) {
+        break;
+      }
+    }
+  }
+
+  alert(`통신 오류가 발생했습니다.\n\n잠시 후 다시 시도해 주세요.`);
+  return null;
+}
+
+function pgGen() {
+  const topic = document.getElementById('pg-topic').value;
+  const qBox = document.getElementById('pg-q');
+  qBox.classList.remove('ph');
+
+  const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+  const type = rand(1, 3);
+  const a = rand(2, 9), b = rand(2, 9), c = rand(2, 9), d = rand(1, 5);
+
+  let p = { q: '', s: '', a: '' };
+
+  switch (topic) {
+    case '소인수분해':
+      if (type === 1) { const num = a * a * b; p.q = `자연수 \\( ${num} \\) 을 소인수분해 하시오.`; p.a = `\\( ${a}^2 \\times ${b} \\)`; p.s = `소수로 차례대로 나눕니다.`; }
+      else if (type === 2) { const num = Math.pow(2, d) * Math.pow(3, d + 1); p.q = `\\( 2^{${d}} \\times 3^{${d + 1}} \\) 의 약수의 개수를 구하시오.`; p.a = `\\( ${(d + 1) * (d + 2)} \\)개`; p.s = `지수에 1을 더하여 서로 곱합니다.`; }
+      else { p.q = `두 수 \\( 2^2 \\times 3 \\) 과 \\( 2 \\times 3^2 \\) 의 최대공약수를 구하시오.`; p.a = `\\( 6 \\)`; p.s = `공통된 소인수 중 지수가 작거나 같은 것을 택하여 곱합니다.`; }
+      break;
+    case '정수와 유리수':
+      if (type === 1) { p.q = `\\( (-${a}) + (+${b}) - (-${c}) \\) 의 값을 구하시오.`; p.a = `\\( ${-a + b + c} \\)`; p.s = `덧셈과 뺄셈을 순서대로 계산합니다.`; }
+      else if (type === 2) { p.q = `\\( (-${a}) \\times (+${b}) \\div (-${c}) \\) 의 값을 구하시오.`; p.a = `\\( \\frac{${a * b}}{${c}} \\)`; p.s = `부호를 먼저 결정하고 절댓값끼리 계산합니다.`; }
+      else { p.q = `\\( \\frac{1}{${a}} \\) 의 역수를 \\( x \\), \\( -\\frac{${b}}{${c}} \\) 의 역수를 \\( y \\) 라 할 때, \\( x \\times y \\) 의 값은?`; p.a = `\\( -\\frac{${a * c}}{${b}} \\)`; p.s = `역수를 구한 후 곱셈을 진행합니다.`; }
+      break;
+    case '일차방정식':
+      if (type === 1) { p.q = `일차방정식 \\( ${a}x - ${b} = ${c} \\) 의 해를 구하시오.`; p.a = `\\( x = \\frac{${b + c}}{${a}} \\)`; p.s = `상수항을 우변으로 이항하고 x의 계수로 나눕니다.`; }
+      else if (type === 2) { p.q = `\\( 2(x - ${a}) = ${b}x + ${c} \\) 를 만족하는 \\( x \\) 의 값은?`; p.a = `\\( x = \\frac{${-2 * a - c}}{${b - 2}} \\)`; p.s = `분배법칙으로 괄호를 풀고 x는 좌변, 상수는 우변으로 이항합니다.`; }
+      else { p.q = `비례식 \\( x : ${a} = (x-${d}) : ${b} \\) 의 해를 구하시오.`; p.a = `\\( x = \\frac{${a * d}}{${a - b}} \\)`; p.s = `내항의 곱은 외항의 곱과 같음을 이용합니다.`; }
+      break;
+    case '좌표평면과 그래프':
+      if (type === 1) { p.q = `점 \\( P(-${a}, ${b}) \\) 는 제 몇 사분면 위의 점인가?`; p.a = `제 2 사분면`; p.s = `x좌표가 음수, y좌표가 양수이므로 제 2사분면입니다.`; }
+      else if (type === 2) { p.q = `점 \\( A(${a}, -${b}) \\) 를 x축에 대하여 대칭이동한 점의 좌표를 구하시오.`; p.a = `\\( (${a}, ${b}) \\)`; p.s = `x축 대칭은 y좌표의 부호가 반대로 바뀝니다.`; }
+      else { p.q = `원점을 지나는 직선의 그래프가 점 \\( (${a}, ${a * b}) \\) 를 지날 때, 관계식을 구하시오.`; p.a = `\\( y = ${b}x \\)`; p.s = `정비례 관계식 \\( y=ax \\) 에 대입합니다.`; }
+      break;
+    case '순환소수':
+      if (type === 1) { p.q = `순환소수 \\( 0.\\dot{${a}} \\) 를 기약분수로 나타내시오.`; const g = (x, y) => y === 0 ? x : g(y, x % y); p.a = `\\( \\frac{${a / g(a, 9)}}{${9 / g(a, 9)}} \\)`; p.s = `순환마디만큼 분모에 9를 적습니다.`; }
+      else if (type === 2) { p.q = `순환소수 \\( 1.\\dot{${a}} \\) 와 \\( 0.\\dot{${b}} \\) 의 합을 분수로 나타내시오.`; p.a = `\\( \\frac{${9 + a + b}}{9} \\)`; p.s = `각각 분수로 고친 후 더합니다.`; }
+      else { p.q = `분수 \\( \\frac{${a}}{${b * 3}} \\) 를 소수로 나타낼 때, 유한소수인지 무한소수인지 판별하시오.`; p.a = `직접 소인수분해 확인`; p.s = `분모의 소인수가 2나 5뿐인지 확인합니다.`; }
+      break;
+    case '식의 계산':
+      if (type === 1) { p.q = `\\( (x^{${a}}y^{${b}})^{${c}} \\) 를 간단히 하시오.`; p.a = `\\( x^{${a * c}}y^{${b * c}} \\)`; p.s = `지수법칙을 적용하여 지수끼리 곱합니다.`; }
+      else if (type === 2) { p.q = `다항식 \\( (${a}x + ${b}y) - (${c}x - ${d}y) \\) 를 계산하시오.`; p.a = `\\( ${a - c}x + ${b + d}y \\)`; p.s = `동류항끼리 묶어서 계산합니다.`; }
+      else { p.q = `\\( (${a}a^2 b) \\div (-${b}ab) \\times ${c}a \\) 를 간단히 하시오.`; p.a = `\\( -\\frac{${a * c}}{${b}}a^2 \\)`; p.s = `나눗셈을 곱셈으로 고치고 계수와 문자를 각각 계산합니다.`; }
+      break;
+    case '연립방정식':
+      if (type === 1) { p.q = `\\( \\begin{cases} x + y = ${a + b} \\\\ x - y = ${a - b} \\end{cases} \\) 의 해를 구하시오.`; p.a = `\\( x=${a}, y=${b} \\)`; p.s = `두 식을 더하여 y를 소거하는 가감법을 씁니다.`; }
+      else if (type === 2) { p.q = `\\( y = ${a}x \\) 이고 \\( 2x + y = ${b} \\) 일 때, 해를 구하시오.`; p.a = `\\( x=\\frac{${b}}{${2 + a}} \\)`; p.s = `y 대신 ${a}x를 대입하는 대입법을 사용합니다.`; }
+      else { p.q = `두 수의 합이 ${a + b} 이고 차가 ${Math.abs(a - b)} 일 때, 큰 수를 구하시오.`; p.a = `\\( ${Math.max(a, b)} \\)`; p.s = `두 수를 x, y로 놓고 연립방정식을 세웁니다.`; }
+      break;
+    case '일차함수':
+      if (type === 1) { p.q = `일차함수 \\( y = ${a}x - ${b} \\) 의 x절편과 y절편을 각각 구하시오.`; p.a = `x절편: \\( \\frac{${b}}{${a}} \\), y절편: \\( -${b} \\)`; p.s = `y=0일 때 x값, x=0일 때 y값입니다.`; }
+      else if (type === 2) { p.q = `기울기가 ${a}이고 점 \\( (1, ${b}) \\) 를 지나는 일차함수의 식을 구하시오.`; p.a = `\\( y = ${a}x + ${b - a} \\)`; p.s = `\\( y = ax+b \\) 꼴에 대입하여 b를 구합니다.`; }
+      else { p.q = `두 점 \\( (0, ${a}) \\) 와 \\( (${b}, ${c}) \\) 를 지나는 직선의 기울기는?`; p.a = `\\( \\frac{${c - a}}{${b}} \\)`; p.s = `x증가량 분의 y증가량을 구합니다.`; }
+      break;
+    case '도형의 성질':
+      if (type === 1) { p.q = `정${a + 3}각형의 한 내각의 크기를 구하시오.`; p.a = `\\( \\frac{180 \\times ${a + 1}}{${a + 3}}^\\circ \\)`; p.s = `공식 \\( 180^\\circ(n-2)/n \\) 을 사용합니다.`; }
+      else if (type === 2) { p.q = `이등변삼각형의 꼭지각이 \\( ${a * 10}^\\circ \\) 일 때, 한 밑각의 크기는?`; p.a = `\\( \\frac{180 - ${a * 10}}{2}^\\circ \\)`; p.s = `이등변삼각형의 두 밑각의 크기는 같습니다.`; }
+      else { p.q = `직각삼각형에서 빗변의 중심(외심)은 어디에 위치하는가?`; p.a = `빗변의 중점`; p.s = `직각삼각형의 외심의 위치 성질입니다.`; }
+      break;
+    case '제곱근':
+      if (type === 1) { p.q = `\\( \\sqrt{${a * a * b}} \\) 를 \\( a\\sqrt{b} \\) 꼴로 나타내시오.`; p.a = `\\( ${a}\\sqrt{${b}} \\)`; p.s = `제곱수는 근호 밖으로 꺼냅니다.`; }
+      else if (type === 2) { p.q = `분수 \\( \\frac{${a}}{\\sqrt{${b}}} \\) 의 분모를 유리화하시오.`; p.a = `\\( \\frac{${a}\\sqrt{${b}}}{${b}} \\)`; p.s = `분모와 분자에 \\( \\sqrt{${b}} \\) 를 곱합니다.`; }
+      else { p.q = `\\( \\sqrt{${a}} \\times \\sqrt{${b}} \\div \\sqrt{${c}} \\) 를 간단히 하시오.`; p.a = `\\( \\sqrt{\\frac{${a * b}}{${c}}} \\)`; p.s = `근호 안의 수끼리 곱하고 나눕니다.`; }
+      break;
+    case '인수분해':
+      if (type === 1) { p.q = `이차식 \\( x^2 + ${a + b}x + ${a * b} \\) 를 인수분해 하시오.`; p.a = `\\( (x+${a})(x+${b}) \\)`; p.s = `합해서 ${a + b}, 곱해서 ${a * b}가 되는 두 수를 찾습니다.`; }
+      else if (type === 2) { p.q = `다항식 \\( x^2 - ${a * a} \\) 를 인수분해 하시오.`; p.a = `\\( (x+${a})(x-${a}) \\)`; p.s = `합차공식을 이용합니다.`; }
+      else { p.q = `다항식 \\( x^2 + ${2 * a}x + ${a * a} \\) 를 완전제곱식으로 나타내시오.`; p.a = `\\( (x+${a})^2 \\)`; p.s = `완전제곱식의 형태를 갖추고 있습니다.`; }
+      break;
+    case '이차방정식':
+      if (type === 1) { p.q = `이차방정식 \\( x^2 - ${a + b}x + ${a * b} = 0 \\) 의 두 근을 구하시오.`; p.a = `\\( x=${a} \\text{ 또는 } x=${b} \\)`; p.s = `인수분해하여 해를 구합니다.`; }
+      else if (type === 2) { p.q = `이차방정식 \\( x^2 - ${2 * a}x + k = 0 \\) 이 중근을 가질 때, 상수 \\( k \\) 의 값은?`; p.a = `\\( ${a * a} \\)`; p.s = `판별식 \\( D = 0 \\) 이거나 완전제곱식이 되어야 합니다.`; }
+      else { p.q = `이차방정식 \\( ${a}x^2 - ${b}x - ${c} = 0 \\) 에서 근의 공식을 쓸 때 근호 안(판별식)의 값은?`; p.a = `\\( ${b * b + 4 * a * c} \\)`; p.s = `\\( b^2 - 4ac \\) 를 계산합니다.`; }
+      break;
+    case '이차함수':
+      if (type === 1) { p.q = `이차함수 \\( y = (x-${a})^2 + ${b} \\) 의 꼭짓점의 좌표를 구하시오.`; p.a = `\\( (${a}, ${b}) \\)`; p.s = `표준형 \\( y=a(x-p)^2+q \\) 에서 꼭짓점은 \\( (p,q) \\) 입니다.`; }
+      else if (type === 2) { p.q = `이차함수 \\( y = x^2 - ${2 * a}x \\) 의 축의 방정식을 구하시오.`; p.a = `\\( x = ${a} \\)`; p.s = `완전제곱식으로 변형하여 대칭축을 구합니다.`; }
+      else { p.q = `이차함수 \\( y = -${a}x^2 \\) 의 그래프의 모양과 볼록성을 설명하시오.`; p.a = `위로 볼록한 포물선`; p.s = `최고차항 계수가 음수이므로 위로 볼록합니다.`; }
+      break;
+    case '삼각비':
+      if (type === 1) { p.q = `\\( \\sin 30^\\circ + \\cos 60^\\circ \\) 의 값을 구하시오.`; p.a = `\\( 1 \\)`; p.s = `둘 다 \\( \\frac{1}{2} \\) 입니다.`; }
+      else if (type === 2) { p.q = `직각삼각형에서 빗변이 10, 한 예각이 \\( 45^\\circ \\) 일 때, 다른 변의 길이는?`; p.a = `\\( 5\\sqrt{2} \\)`; p.s = `\\( \\sin 45^\\circ \\) 또는 \\( \\cos 45^\\circ \\) 를 이용합니다.`; }
+      else { p.q = `\\( \\tan 45^\\circ \\times \\tan 60^\\circ \\) 의 값은?`; p.a = `\\( \\sqrt{3} \\)`; p.s = `\\( 1 \\times \\sqrt{3} \\) 입니다.`; }
+      break;
+    case '다항식':
+      if (type === 1) { p.q = `다항식 \\( A = x^2 + ${a}x \\), \\( B = 2x^2 - ${b} \\) 일 때, \\( A + B \\) 를 구하시오.`; p.a = `\\( 3x^2 + ${a}x - ${b} \\)`; p.s = `동류항끼리 덧셈합니다.`; }
+      else if (type === 2) { p.q = `다항식 \\( P(x) = x^3 - ${a}x + ${b} \\) 를 \\( x-1 \\) 로 나눈 나머지는?`; p.a = `\\( ${1 - a + b} \\)`; p.s = `나머지 정리에 의해 \\( P(1) \\) 을 구합니다.`; }
+      else { p.q = `\\( (x+${a})^3 \\) 을 전개했을 때, \\( x^2 \\) 의 계수는?`; p.a = `\\( ${3 * a} \\)`; p.s = `곱셈공식에 의해 \\( 3 \\times a \\times x^2 \\) 입니다.`; }
+      break;
+    case '이차방정식과 함수':
+      if (type === 1) { p.q = `이차방정식 \\( x^2 - ${a + b}x + ${a * b} = 0 \\) 의 두 근의 합과 곱을 구하시오.`; p.a = `합: ${a + b}, 곱: ${a * b}`; p.s = `근과 계수의 관계를 이용합니다.`; }
+      else if (type === 2) { p.q = `이차함수 \\( y = x^2 - ${2 * a}x + ${c} \\) 의 최솟값을 구하시오.`; p.a = `\\( ${c - a * a} \\)`; p.s = `완전제곱식으로 고친 후 꼭짓점의 y좌표를 찾습니다.`; }
+      else { p.q = `이차함수 \\( y = x^2 \\) 의 그래프와 직선 \\( y = x + ${a} \\) 의 교점의 x좌표 합은?`; p.a = `\\( 1 \\)`; p.s = `\\( x^2 - x - ${a} = 0 \\) 의 두 근의 합입니다.`; }
+      break;
+    case '원의 방정식':
+      if (type === 1) { p.q = `중심이 \\( (${a}, -${b}) \\) 이고 반지름이 \\( ${c} \\) 인 원의 방정식은?`; p.a = `\\( (x-${a})^2 + (y+${b})^2 = ${c * c} \\)`; p.s = `원의 방정식 기본형에 대입합니다.`; }
+      else { p.q = `원 \\( x^2 + y^2 = ${a * a} \\) 위의 점 \\( (0, ${a}) \\) 에서의 접선의 방정식은?`; p.a = `\\( y = ${a} \\)`; p.s = `y축 위의 점이므로 가로선이 됩니다.`; }
+      break;
+    case '집합과 명제':
+      if (type === 1) { p.q = `원소의 개수가 ${a}개인 집합의 진부분집합의 개수는?`; p.a = `\\( 2^{${a}} - 1 \\)개`; p.s = `전체 부분집합 수에서 자기 자신 1개를 뺍니다.`; }
+      else { p.q = `명제 '\\( x = ${a} \\) 이면 \\( x^2 = ${a * a} \\) 이다'의 역을 쓰시오.`; p.a = `\\( x^2 = ${a * a} \\) 이면 \\( x = ${a} \\) 이다.`; p.s = `가정과 결론의 자리를 바꿉니다.`; }
+      break;
+    case '함수':
+      if (type === 1) { p.q = `함수 \\( f(x) = ${a}x + ${b} \\) 에 대하여 \\( f^{-1}(${a + b}) \\) 의 값은?`; p.a = `\\( 1 \\)`; p.s = `\\( f(k) = ${a + b} \\) 를 만족하는 k를 찾습니다.`; }
+      else { p.q = `두 함수 \\( f(x)=x+${a} \\), \\( g(x)=${b}x \\) 에 대해 합성함수 \\( (f \\circ g)(x) \\) 를 구하시오.`; p.a = `\\( ${b}x + ${a} \\)`; p.s = `\\( f(g(x)) \\) 에 식을 대입합니다.`; }
+      break;
+    case '지수와 로그':
+      if (type === 1) { p.q = `\\( \\log_{${a}} ${a * a} + \\log_{${a}} ${Math.pow(a, 3)} \\) 의 값을 구하시오.`; p.a = `\\( 5 \\)`; p.s = `로그의 성질에 의해 \\( 2 + 3 = 5 \\) 입니다.`; }
+      else if (type === 2) { p.q = `\\( 2^{x} = ${Math.pow(2, a)} \\) 일 때, \\( x \\) 의 값은?`; p.a = `\\( ${a} \\)`; p.s = `밑이 같으므로 지수끼리 비교합니다.`; }
+      else { p.q = `\\( \\log_{2} ${a} + \\log_{2} ${b} \\) 를 하나의 로그로 합치시오.`; p.a = `\\( \\log_{2} ${a * b} \\)`; p.s = `밑이 같은 로그의 합은 진수의 곱입니다.`; }
+      break;
+    case '삼각함수':
+      if (type === 1) { p.q = `함수 \\( y = \\sin(${a}x) \\) 의 주기를 구하시오.`; p.a = `\\( \\frac{2\\pi}{${a}} \\)`; p.s = `원래 주기를 x의 계수로 나눕니다.`; }
+      else { p.q = `\\( \\cos^2 \\theta + \\sin^2 \\theta + ${a} \\) 의 값은?`; p.a = `\\( ${1 + a} \\)`; p.s = `\\( \\sin^2 + \\cos^2 = 1 \\) 의 성질을 이용합니다.`; }
+      break;
+    case '수열':
+      if (type === 1) { p.q = `첫째항이 ${a}이고 공차가 ${b}인 등차수열의 제 5항을 구하시오.`; p.a = `\\( ${a + 4 * b} \\)`; p.s = `\\( a_n = a_1 + (n-1)d \\) 에 대입합니다.`; }
+      else if (type === 2) { p.q = `첫째항이 ${a}이고 공비가 2인 등비수열의 제 4항은?`; p.a = `\\( ${a * 8} \\)`; p.s = `\\( a_n = a_1 r^{n-1} \\) 에 대입합니다.`; }
+      else { p.q = `\\( \\sum_{k=1}^{10} ${a} \\) 의 값을 구하시오.`; p.a = `\\( ${a * 10} \\)`; p.s = `상수항 ${a}가 10번 더해집니다.`; }
+      break;
+    case '함수의 극한':
+    case '수열의 극한':
+      if (type === 1) { p.q = `극한값 \\( \\lim_{x \\to ${a}} \\frac{x^2 - ${a * a}}{x - ${a}} \\) 을 구하시오.`; p.a = `\\( ${a * 2} \\)`; p.s = `분자를 인수분해하여 약분합니다.`; }
+      else { p.q = `극한값 \\( \\lim_{n \\to \\infty} \\frac{${a}n^2 + 3}{${b}n^2 - n} \\) 을 구하시오.`; p.a = `\\( \\frac{${a}}{${b}} \\)`; p.s = `최고차항의 계수의 비를 구합니다.`; }
+      break;
+    case '미분':
+    case '미분법':
+      if (type === 1) { p.q = `함수 \\( f(x) = ${a}x^3 - ${b}x \\) 의 도함수를 구하시오.`; p.a = `\\( f'(x) = ${3 * a}x^2 - ${b} \\)`; p.s = `다항함수의 미분법을 적용합니다.`; }
+      else { p.q = `곡선 \\( y = x^2 + ${a} \\) 위의 점 \\( (1, ${1 + a}) \\) 에서의 접선의 기울기는?`; p.a = `\\( 2 \\)`; p.s = `도함수 \\( y' = 2x \\) 에 x=1을 대입합니다.`; }
+      break;
+    case '적분':
+    case '적분법':
+      if (type === 1) { p.q = `정적분 \\( \\int_{0}^{1} ${a}x \\, dx \\) 의 값을 구하시오.`; p.a = `\\( \\frac{${a}}{2} \\)`; p.s = `부정적분을 구한 후 위끝과 아래끝을 대입합니다.`; }
+      else { p.q = `함수 \\( f(x) = ${a} \\) 의 부정적분을 구하시오.`; p.a = `\\( ${a}x + C \\)`; p.s = `상수항을 적분하면 1차항이 됩니다. (C는 적분상수)`; }
+      break;
+    case '확률과 통계':
+      if (type === 1) { p.q = `서로 다른 ${a + 2}명 중 대표 2명을 뽑는 경우의 수는?`; p.a = `\\( {}_{${a + 2}}\\mathrm{C}_{2} \\)`; p.s = `조합 기호를 사용하여 계산합니다.`; }
+      else if (type === 2) { p.q = `한 개의 주사위를 던질 때, 짝수의 눈이 나올 확률은?`; p.a = `\\( \\frac{1}{2} \\)`; p.s = `전체 6가지 중 3가지입니다.`; }
+      else { p.q = `문자 A, B, C를 일렬로 나열하는 경우의 수는?`; p.a = `\\( 6 \\)`; p.s = `\\( 3! = 3 \\times 2 \\times 1 = 6 \\) 입니다.`; }
+      break;
+    default:
+      p.q = `[${topic}] 유형 ${type}: \\( f(x) = ${a}x^2 + ${b} \\) 일 때, \\( f(${c}) \\) 의 값은?`;
+      p.a = `\\( ${a * c * c + b} \\)`;
+      p.s = `함수식에 x=${c}를 대입하여 계산합니다.`;
+  }
+
+  qBox.innerHTML = formatMath(p.q);
+  document.getElementById('pg-steps').innerHTML = `<div class="step">${formatMath(p.s)}</div>`;
+  document.getElementById('pg-ans').innerHTML = `정답: ${formatMath(p.a)}`;
+  document.getElementById('pg-sw').style.display = 'none';
+  if (window.MathJax) MathJax.typesetPromise();
+}
+
+async function aiGen() {
+  const req = document.getElementById('ai-custom').value.trim();
+  if (!req) return showToast('요청을 입력하세요.');
+
+  const qBox = document.getElementById('ai-q');
+  const load = document.getElementById('aiLoad');
+  const sw = document.getElementById('ai-sw');
+
+  qBox.style.display = 'none';
+  sw.style.display = 'none';
+  load.classList.add('on');
+
+  const prompt = `당신은 대한민국 수학 교사를 위한 문제 출제 AI입니다.
+다음 요구사항에 맞춰 수학 문제를 1개 만드세요: "${req}"
+
+[출력 규칙]
+1. 오직 JSON 객체만 출력하세요. 설명이나 마크다운 코드블록 금지.
+2. LaTeX 수식은 \\( 와 \\) 로 감싸세요.
+3. JSON 내 백슬래시는 두 번 써야 합니다. 예: \\\\frac
+
+{"q": "문제", "s": "풀이", "a": "정답"}`;
+
+  const raw = await callAI(prompt, true);
+  load.classList.remove('on');
+  qBox.style.display = 'block';
+
+  if (!raw) return;
+
+  const data = parseJsonResponse(raw);
+
+  if (data && data.q && data.s && data.a) {
+    qBox.innerHTML = formatMath(data.q);
+    qBox.classList.remove('ph');
+    document.getElementById('ai-steps').innerHTML = `<div class="step">${formatMath(data.s)}</div>`;
+    document.getElementById('ai-ans').innerHTML = `정답: ${formatMath(data.a)}`;
+    if (window.MathJax) MathJax.typesetPromise();
+  } else {
+    qBox.innerHTML = '문제 생성에 실패했습니다. 다시 시도해주세요.';
+    qBox.classList.remove('ph');
+  }
+}
+
+function feTab(id, b) {
+  document.querySelectorAll('.ftab').forEach(t => t.classList.remove('on'));
+  b.classList.add('on');
+  document.querySelectorAll('.fbd').forEach(f => f.classList.remove('on'));
+  document.getElementById('fe-' + id).classList.add('on');
+}
+
+function fi(l) {
+  document.getElementById('fe-input').value += l + ' ';
+  renderPv();
+}
+
+function delLtx() {
+  const ta = document.getElementById('fe-input');
+  let v = ta.value.trimEnd();
+  if (!v) return;
+  const lastIdx = v.lastIndexOf(' ');
+  ta.value = lastIdx === -1 ? '' : v.substring(0, lastIdx) + ' ';
+  renderPv();
+}
+
+function clrLtx() {
+  document.getElementById('fe-input').value = '';
+  renderPv();
+}
+
+function copyLtx() {
+  navigator.clipboard.writeText(document.getElementById('fe-input').value.trim());
+  showToast('클립보드 복사 완료!');
+}
+
+function renderPv() {
+  const v = document.getElementById('fe-input').value;
+  const pv = document.getElementById('fe-pv');
+  pv.innerHTML = v ? `\\( ${v} \\)` : '';
+  if (window.MathJax) MathJax.typesetPromise([pv]);
+}
+
+async function convertKo() {
+  const ko = document.getElementById('fe-ko').value.trim();
+  if (!ko) return showToast('변환할 한글 수식을 입력하세요.');
+
+  const load = document.getElementById('aitLoad');
+  load.classList.add('on');
+
+  const prompt = `수학 기호 변환기입니다. 다음 한국어 설명을 순수 LaTeX 코드로만 변환하세요.
+설명이나 마크다운 없이 코드만 출력하세요: "${ko}"`;
+
+  const ltx = await callAI(prompt, false);
+  load.classList.remove('on');
+
+  if (ltx) {
+    const cleaned = ltx
+      .replace(/```latex\s*/gi, '')
+      .replace(/```\s*/g, '')
+      .replace(/\$/g, '')
+      .trim();
+    document.getElementById('fe-input').value += cleaned + ' ';
+    renderPv();
+    feTab('ltx', document.querySelectorAll('.ftab')[1]);
+  }
+}
+</script>
+</body>
+</html>
